@@ -1,15 +1,18 @@
 import express, {Request, Response} from "express";
+import config from './config'
+
+
 
 const server = express();
-
 server.use(express.json());
 
-server.all("/api", (req:Request, resp:Response)=>{
-  console.log(req.socket.address())
-  resp.send("Api response service")
-})
 
-server.listen(3005, ()=>{
-  console.log("server listen on port 3005")
+server.all("/api/:value", (req:Request, resp:Response)=>{
+  console.log(req.socket.address())
+  
+  resp.send(`Response from api with ${req.params.value} param`)
+})
+server.listen(config.server.port, ()=>{
+  console.log(`Server running on port ${config.server.port}`)
 })
 
