@@ -1,11 +1,13 @@
 //const boom = require('@hapi/boom'); // Es un manejador de errorres
 
 class UserService {
-    
+
+    repository:UserRepository;
+
     constructor(){};
 
-    async findOne(id:number) {
-        const user = await models.User.findByPk(id);
+    async findOne(userName:string) {
+        const user = await this.repository.findUserByUsername(userName);
         if(!user){
           boom.notFound('user not found');
         }
