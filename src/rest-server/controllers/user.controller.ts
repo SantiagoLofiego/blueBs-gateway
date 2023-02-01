@@ -16,6 +16,5 @@ export class UserController{
         } catch (error) {
           next(error);
         }
-    }
-    
+    }    
 }
