@@ -1,39 +1,15 @@
-const { Model, DataTypes, Sequelize } = require('sequelize');
+class User {   
+    
+  id:number;
+  userName:string;
+  password:string;
 
-const USER_TABLE = 'users';
-const UserSchema = {
-  id: {
-    allowNull: false,
-    autoIncrement: true,
-    primaryKey: true,
-    type: DataTypes.INTEGER
-  },
-  userName: {
-    allowNull: false,
-    type: DataTypes.STRING,
-    unique: true,
-  },
-  email: {
-    allowNull: false,
-    type: DataTypes.STRING,
-    unique: true,
-  },
-  password: {
-    allowNull: false,
-    type: DataTypes.STRING,
+  constructor(id:number, userName:string, password:string){
+    this.id=id;
+    this.userName=userName;
+    this.password=password;
   }
-  
+
 }
 
-class User extends Model {  
-  static config(sequelize){
-    return {
-      sequelize,
-      tableName:USER_TABLE,
-      modelName:'User',
-      timestamps: false
-    }
-  }
-}
-
-module.exports = {USER_TABLE, UserSchema, User}
+module.exports = { User }
