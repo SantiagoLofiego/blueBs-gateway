@@ -21,7 +21,6 @@ class Microservice {
         this.instances.push(instance);
     }
 
-
 }
 
 module.exports = { Microservice }
