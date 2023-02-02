@@ -12,8 +12,8 @@ type Container = {
 }
 
 class DiContainer {
-  container: Container;
-  factory: Factory
+  private container: Container;
+  private factory: Factory
 
   constructor() {
     this.container = {};
