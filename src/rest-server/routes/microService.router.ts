@@ -1,18 +1,22 @@
-import { addMicroservice, removeMicroservice, getServiceUrl } from "../controllers/microservice.controller";
+import {
+  addMicroservice,
+  removeMicroservice,
+  getServiceUrl,
+} from "../controllers/microservice.controller";
 
-const express = require('express');
+const express = require("express");
 
 const router = express.Router();
 const microServiceServiceRouter = express.Router();
 
 //Definición de endpoints
-router.get('/:microservice', addMicroservice);
+router.get("/:microservice", addMicroservice);
 
-router.remove('/:microservice', removeMicroservice);
+router.remove("/:microservice", removeMicroservice);
 
-router.get('/:serviceName', getServiceUrl);
+router.get("/:serviceName", getServiceUrl);
 
 //Adición de ruta raíz para '/microservice'
-microServiceServiceRouter.use('/microservice', router);
+microServiceServiceRouter.use("/microservice", router);
 
 module.exports = microServiceServiceRouter;

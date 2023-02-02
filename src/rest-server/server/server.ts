@@ -1,18 +1,26 @@
-import express, { Router } from "express";
-import { ServiceInstance } from "../../domain/models/serivce-instance.model";
-import router from "../routes";
+import express, { Router, Express } from "express";
 
 export class Server {
-  public router: Router;
-  public port: String;
+  private static instance: Server;
+  private express: Express;
 
-  private constructor(port: String, router: Router) {
-    this.router = router;
-    this.port = port;
+  constructor() {
+    this.express = express();
   }
-  getInstance(): Server {}
 
-  run(): void {
-    router.use();
+  static getInstance(): Server {
+    if (!Server.instance) {
+      Server.instance = new Server();
+    }
+    return Server.instance;
+  }
+
+  run(port: string): void {
+    this.express.listen(port, () => {
+      console.log(`Server running on port ${port}`);
+    });
+  }
+  start(router: Router) {
+    this.express.use(`/server/`, router);
   }
 }
