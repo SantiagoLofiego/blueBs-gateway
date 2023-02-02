@@ -12,8 +12,8 @@ class microServiceService {
 
     }
 
-    async getService(serviceName:string):Promise<string> {
-        return "serviceName";
+    async getService(serviceName:string): Promise<ServiceInstance> {
+        return new ServiceInstance('','','',STATUS.ONLINE); 
     }
        
 }
