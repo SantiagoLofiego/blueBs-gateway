@@ -19,4 +19,4 @@ router.get("/:serviceName", getServiceUrl);
 //Adición de ruta raíz para '/microservice'
 microServiceServiceRouter.use("/microservice", router);
 
-module.exports = microServiceServiceRouter;
+export default microServiceServiceRouter;
