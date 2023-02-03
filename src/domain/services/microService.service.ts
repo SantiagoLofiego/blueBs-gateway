@@ -1,6 +1,6 @@
 const boom = require("@hapi/boom"); // Es un manejador de errorres
 
-class microServiceService {
+export class MicroServiceService {
   constructor() {}
 
   async add(service: ServiceInstance) {}

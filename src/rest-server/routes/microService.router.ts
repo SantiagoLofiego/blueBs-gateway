@@ -12,7 +12,7 @@ const microServiceServiceRouter = express.Router();
 //Definición de endpoints
 router.get("/:microservice", addMicroservice);
 
-router.remove("/:microservice", removeMicroservice);
+router.delete("/:microservice", removeMicroservice);
 
 router.get("/:serviceName", getServiceUrl);
 

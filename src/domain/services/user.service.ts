@@ -1,4 +1,4 @@
-//const boom = require('@hapi/boom'); // Es un manejador de errorres
+const boom = require('@hapi/boom'); // Es un manejador de errorres
 
 class UserService {
 
