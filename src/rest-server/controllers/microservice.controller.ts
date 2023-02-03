@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
+import { MicroServiceService } from "../../domain/services/microService.service";
 
-let service: microServiceService = new microServiceService();
+let service: MicroServiceService = new MicroServiceService();
 
 export const addMicroservice = async (
   req: Request<{ service: ServiceInstance }>,
