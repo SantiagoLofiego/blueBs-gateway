@@ -1,4 +1,4 @@
-{
+export const dbMicroservices={
     "services": {
         "servicio1": {
             "serviceName": "servicioUsuarios",
