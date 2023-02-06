@@ -1,8 +1,10 @@
+import config from "./config";
+import DiContainer from "./config/DI/DiContainer";
 import { Server } from "./rest-server/server/server";
 
-const main = async () => {
-  const server = new Server(3000);
-  await server.run();
+const main = () => {
+  const context = new DiContainer();
+  context.get<Server>("Server").run(config.server.port);
 };
 
 main();

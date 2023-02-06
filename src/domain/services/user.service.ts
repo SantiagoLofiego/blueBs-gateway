@@ -1,17 +1,16 @@
-const boom = require('@hapi/boom'); // Es un manejador de errorres
+const boom = require("@hapi/boom"); // Es un manejador de errorres
 
-class UserService {
+export class UserService {
+  //repository:UserRepository;
 
-    //repository:UserRepository;
+  constructor() {}
 
-    constructor(){};
-
-    async findOne(userName:string) {
-       // const user = await this.repository.findUserByUsername(userName);
-       const user = "prueba" 
-       if(!user){
-          boom.notFound('user not found');
-        }
-        return user;
-      }
+  async findOne(userName: string) {
+    // const user = await this.repository.findUserByUsername(userName);
+    const user = "prueba";
+    if (!user) {
+      boom.notFound("user not found");
+    }
+    return user;
+  }
 }

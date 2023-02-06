@@ -1,42 +1,34 @@
-import express, { Express, Response, Request } from "express";
-import microServiceServiceRouter from "../routes/microService.router";
+import express, { Express } from "express";
+import routes from "../routes";
 
 export class Server {
-  private instance?: Server;
+  private static instance?: Server;
   private express: Express;
 
-  constructor(private port?: number | string) {
+  private constructor(private port?: number | string) {
     this.express = express();
     this.settings();
-    this.middleware();
-    this.start;
+    this.routes();
   }
 
-  getInstance(): Server {
-    if (!this.instance) {
-      this.instance = new Server();
+  static getInstance(): Server {
+    if (!Server.instance) {
+      Server.instance = new Server();
     }
-    return this.instance;
+    return Server.instance;
   }
 
   private settings() {
     this.express.set("port", this.port || process.env.PORT || "3000");
   }
 
-  private middleware() {
-    this.express.use(express.json());
+  private routes() {
+    this.express.use(routes);
   }
 
-  async run(): Promise<void> {
-    await this.express.listen(this.port, () => {
+  run(port?: number | string): void {
+    this.express.listen(port, () => {
       console.log(`Server running on port ${this.express.get("port")}`);
     });
-  }
-  private start(): void {
-    this.express.all("api/:value", (req: Request, resp: Response) => {
-      console.log(req.socket.address());
-      resp.send(`Response from api with ${req.params.value} param`);
-    });
-    this.express.use(`/server`, microServiceServiceRouter);
   }
 }
