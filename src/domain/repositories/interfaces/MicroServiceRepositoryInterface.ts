@@ -1,8 +1,8 @@
-interface MicroServiceRepository{
+interface MicroServiceRepositoryInterface{
     add(instance:ServiceInstance):ServiceInstance;
     find(serviceName:string):ServiceInstance;
     update(instance:ServiceInstance):ServiceInstance;
     removeMicroService(instance:ServiceInstance):ServiceInstance;
 }
 
-export default MicroServiceRepository;
+export default MicroServiceRepositoryInterface;
