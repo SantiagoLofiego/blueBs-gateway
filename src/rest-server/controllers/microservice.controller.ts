@@ -4,14 +4,18 @@ import { MicroServiceService } from "../../domain/services/microService.service"
 let service: MicroServiceService = new MicroServiceService();
 
 export const addMicroservice = async (
-  req: Request<{ service: ServiceInstance }>,
+  req: Request<{
+    microservice: any;
+    service: ServiceInstance;
+  }>,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    let serviceToAdd = req.params.service;
+    let serviceToAdd = req.params.microservice;
     await service.add(serviceToAdd);
-    return res.json(serviceToAdd);
+    return res.send(serviceToAdd);
+    //return res.json(serviceToAdd);
   } catch (error) {
     next(error);
   }
@@ -44,3 +48,5 @@ export const getServiceUrl = (
     next(error);
   }
 };
+
+export const getService = (req: Request, res: Response) => {};

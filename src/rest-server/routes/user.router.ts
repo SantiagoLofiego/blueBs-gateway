@@ -7,8 +7,6 @@ const userRouter = express.Router();
 
 const controller = new UserController();
 
-router.get("/:username", controller.findUser);
-
-userRouter.use("/users", router);
+userRouter.get("/:username", controller.findUser);
 
 export default userRouter;

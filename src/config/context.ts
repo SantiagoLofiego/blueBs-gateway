@@ -2,7 +2,8 @@ import config from ".";
 import { Server } from "../rest-server/server/server";
 import DiContainer from "./DI/DiContainer";
 
-const context = new DiContainer();
-context.registerInstance("server", Server);
+const container = new DiContainer();
 
-export default context;
+container.registerInstance("server", Server.getInstance());
+
+export default container;

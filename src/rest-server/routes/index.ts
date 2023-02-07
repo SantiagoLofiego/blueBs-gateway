@@ -6,6 +6,6 @@ const routes = Router();
 const app = express();
 
 app.use(express.json());
-routes.use(userRouter, microServiceServiceRouter);
-
+routes.use("/user", userRouter);
+routes.use("/microservices", microServiceServiceRouter);
 export default routes;
