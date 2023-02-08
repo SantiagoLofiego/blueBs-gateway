@@ -3,14 +3,7 @@ import { MicroServiceService } from "../../domain/services/microService.service"
 
 let service: MicroServiceService = new MicroServiceService();
 
-export const addMicroservice = async (
-  req: Request<{
-    microservice: any;
-    service: ServiceInstance;
-  }>,
-  res: Response,
-  next: NextFunction
-) => {
+export const addMicroservice = async (req: Request<{ microservice: any; service: ServiceInstance }>, res: Response, next: NextFunction) => {
   try {
     let serviceToAdd = req.params.microservice;
     await service.add(serviceToAdd);
@@ -21,11 +14,7 @@ export const addMicroservice = async (
   }
 };
 
-export const removeMicroservice = async (
-  req: Request<{ service: ServiceInstance }>,
-  res: Response,
-  next: NextFunction
-) => {
+export const removeMicroservice = async (req: Request<{ service: ServiceInstance }>, res: Response, next: NextFunction) => {
   try {
     let serviceToAdd = req.params.service;
     await service.remove(serviceToAdd);
@@ -49,4 +38,4 @@ export const getServiceUrl = (
   }
 };
 
-export const getService = (req: Request, res: Response) => {};
+export const getService = (req: Request, res: Response) => { };

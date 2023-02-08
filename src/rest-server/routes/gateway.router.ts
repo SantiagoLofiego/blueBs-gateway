@@ -1,9 +1,8 @@
 import express from "express";
-import { getGateway, removeGateway } from "../controllers/gateway.controller";
+import { dispatcher } from "../controllers/gateway.controller";
 
 const gatewayRouter = express.Router();
 
-gatewayRouter.get("/:apiName", getGateway);
-gatewayRouter.delete("delete", removeGateway);
+gatewayRouter.use("/:apiName", dispatcher);
 
 export default gatewayRouter;

@@ -1,9 +1,8 @@
-import config from ".";
-import { Server } from "../rest-server/server/server";
+import server from "../rest-server";
 import DiContainer from "./DI/DiContainer";
 
 const container = new DiContainer();
 
-container.registerInstance("server", Server.getInstance());
+container.registerInstance("server", server);
 
 export default container;
