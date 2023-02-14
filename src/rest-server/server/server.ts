@@ -1,10 +1,9 @@
-import express, { Router, Express } from "express";
-
+import express, { Express, Router } from "express";
 export class Server {
   private static instance: Server;
   private express: Express;
 
-  constructor() {
+  private constructor() {
     this.express = express();
   }
 
@@ -15,12 +14,13 @@ export class Server {
     return Server.instance;
   }
 
-  run(port: string): void {
+  routes(route: Router) {
+    this.express.use(route);
+  }
+
+  run(port?: number | string) {
     this.express.listen(port, () => {
       console.log(`Server running on port ${port}`);
     });
-  }
-  start(router: Router) {
-    this.express.use(`/server/`, router);
   }
 }
