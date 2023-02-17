@@ -1,15 +1,29 @@
 const boom = require("@hapi/boom"); // Es un manejador de errorres
+const fs = require('fs');
+import { Microservice } from "../models/microservice.model";
+import { MicroServiceRepository } from "./../../data/microservices/MicroServiceRepository";
 
 export class MicroServiceService {
+  microServiceRepository = new MicroServiceRepository();
   constructor() {}
 
-  async add(service: ServiceInstance) {}
+  addService(service: Microservice): boolean {
+    return this.microServiceRepository.add(service);
+  }
 
-  async remove(service: ServiceInstance) {}
+  register(instance:ServiceInstance):void{    
+    console.log("LLEGA A SERVICE");
+    
+    this.microServiceRepository.register(instance);
+  }
 
+  remove(service: ServiceInstance) { }
 
-    async getService(serviceName:string): Promise<ServiceInstance> {
-        return new ServiceInstance('','','',STATUS.ONLINE); 
-    }
-       
+  getService(serviceName: string): Microservice {
+    return this.microServiceRepository.find(serviceName);
+  }
+
+  getAllServices(){
+    return this.microServiceRepository.getAll();
+  }
 }

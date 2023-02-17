@@ -4,10 +4,10 @@ enum STATUS {
 }
 
 class ServiceInstance {      
-  private serviceName:string;
-  private host:string;
-  private port:string;
-  private status:STATUS;  
+  serviceName:string;
+  host:string;
+  port:string;
+  status:STATUS;  
 
   constructor(serviceName:string,host:string, port:string, status:STATUS){
     this.serviceName=serviceName;
@@ -16,22 +16,22 @@ class ServiceInstance {
     this.status=status;
   }
 
-  getUrl():string{
-    return this.host;
-  }
+  // getUrl():string{
+  //   return this.host;
+  // }
 
-  getServiceName():string{
-    return this.serviceName;
-  }
+  // getServiceName():string{
+  //   return this.serviceName;
+  // }
 
-  getStatus():STATUS{
-    return this.status;
-  }
+  // getStatus():STATUS{
+  //   return this.status;
+  // }
 
 
 
   equals(serviceInstance:ServiceInstance):boolean{
-    if(this.serviceName===serviceInstance.getServiceName() ){
+    if(this.serviceName===serviceInstance.serviceName){
       return true;
     }else{
       return false;

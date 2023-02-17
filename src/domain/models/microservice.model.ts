@@ -1,7 +1,7 @@
 
-class Microservice {  
-    private serviceName:string;
-    private instances: ServiceInstance[];
+export class Microservice {  
+    serviceName:string;
+    instances: ServiceInstance[];
 
     constructor(serviceName:string, instances: ServiceInstance[]){
         this.serviceName=serviceName;
@@ -21,6 +21,13 @@ class Microservice {
         this.instances.push(instance);
     }
 
+    equals(microService:Microservice):boolean{
+        if(this.serviceName == microService.getServicename()){
+            return true;
+        }
+        return false;
+    }
+
 }
 
-module.exports = { Microservice }
+// export default { Microservice }

@@ -1,21 +1,30 @@
 import {
-  MicroserviceController
+  addMicroservice,
+  removeMicroservice,
+  getServiceUrl,
+  getAllMicroservices,
+  registerInstance
 } from "../controllers/microservice.controller";
+
+const bodyParser = require('body-parser')
+  
+// create application/json parser
+const jsonParser = bodyParser.json()
 
 const express = require("express");
 
 const router = express.Router();
-const microServiceServiceRouter = express.Router();
-const controller = new MicroserviceController();
 
 //Definición de endpoints
-router.get("/:microservice", controller.addMicroservice);
+router.post("/addMicroservice", jsonParser ,addMicroservice);
 
-router.delete("/:microservice", controller.removeMicroservice);
+router.delete("/:microservice", removeMicroservice);
 
-router.get("/:serviceName", controller.getServiceUrl);
+router.post("/registerInstance", jsonParser, registerInstance);
+router.get("/:serviceName", getServiceUrl);
+router.get("/",getAllMicroservices);
 
 //Adición de ruta raíz para '/microservice'
-microServiceServiceRouter.use("/microservice", router);
+//microServiceServiceRouter.use("/microservices", router);
 
-export default microServiceServiceRouter;
+export default router;

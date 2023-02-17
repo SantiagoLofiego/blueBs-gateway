@@ -1,8 +1,11 @@
+import { Microservice } from "../../models/microservice.model";
+
 interface MicroServiceRepositoryInterface{
-    add(instance:ServiceInstance):ServiceInstance;
-    find(serviceName:string):ServiceInstance;
+    add(microService:Microservice):boolean;
+    find(serviceName:string):void;
+    register(instance:ServiceInstance):void;
     update(instance:ServiceInstance):ServiceInstance;
-    removeMicroService(instance:ServiceInstance):ServiceInstance;
+    remove(instance:ServiceInstance):ServiceInstance;
 }
 
 export default MicroServiceRepositoryInterface;
