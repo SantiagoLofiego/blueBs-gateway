@@ -11,13 +11,17 @@ export class MicroServiceService {
     return this.microServiceRepository.add(service);
   }
 
-  register(instance:ServiceInstance):void{    
-    console.log("LLEGA A SERVICE");
-    
+  register(instance:ServiceInstance):void{        
     this.microServiceRepository.register(instance);
   }
 
-  remove(service: ServiceInstance) { }
+  remove(serviceInstance: ServiceInstance) {   
+    return this.microServiceRepository.remove(serviceInstance);
+   }
+
+  update(serviceInstance: ServiceInstance){
+    return this.microServiceRepository.update(serviceInstance);
+  }
 
   getService(serviceName: string): Microservice {
     return this.microServiceRepository.find(serviceName);

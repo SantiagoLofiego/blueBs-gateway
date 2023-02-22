@@ -31,7 +31,10 @@ class ServiceInstance {
 
 
   equals(serviceInstance:ServiceInstance):boolean{
-    if(this.serviceName===serviceInstance.serviceName){
+    if(this.host===serviceInstance.host &&
+       this.serviceName===serviceInstance.serviceName &&
+       this.port===serviceInstance.port  
+      ){
       return true;
     }else{
       return false;

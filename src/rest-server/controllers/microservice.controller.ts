@@ -29,13 +29,13 @@ export const addMicroservice = async (
   };
 };
 
-export const removeMicroservice = async (
+export const removeMicroservice = (
   req: Request<{ service: ServiceInstance }>,
   res: Response
 ) => {
   try {
     let serviceToAdd = req.params.service;
-    await service.remove(serviceToAdd);
+    service.remove(serviceToAdd);
     return res.json(serviceToAdd);
   } catch (error) {
     res.json(404)
@@ -50,7 +50,7 @@ export const getServiceUrl = (
     const serviceName: string = req.params.serviceName;
     console.log(serviceName);
     const microservice = service.getService(serviceName);
-    return res.status(200).json({ 
+    res.status(200).json({
       status: 'OK',
       microservice
     });
@@ -81,17 +81,55 @@ export const getAllMicroservices = async (
   }
 }
 
-export const registerInstance = async (
+export const registerInstance = (
   req: Request,
   res: Response,
 ) => {
   try {
     let newServiceInstance = req.body;
-    console.log("LLEGA A CONTROLLER: ");
-
     const data = service.register(newServiceInstance);
     res.status(200).json({
-      status: 'OK',
+      status: 'OK Instancia registrada correctamente',
+      data
+    })
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      data: err
+    });
+  }
+}
+
+export const updateInstance = (
+  req: Request,
+  res: Response,
+) => {
+  try {
+    let newServiceInstance: ServiceInstance = req.body;
+    const data = service.update(newServiceInstance);
+    res.status(200).json({
+      status: 'OK Instancia actualizada correctamente',
+      data: data
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      data: err
+    });
+  }
+
+}
+
+
+export const deleteInstance = (
+  req: Request,
+  res: Response,
+) => {
+  try {
+    let newServiceInstance: ServiceInstance = req.body;
+    const data = service.remove(newServiceInstance);
+    res.status(200).json({
+      status: 'OK "Instancia eliminada correctamente"',
       data
     });
   } catch (err) {
@@ -100,4 +138,5 @@ export const registerInstance = async (
       data: err
     });
   }
+
 }
