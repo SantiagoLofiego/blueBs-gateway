@@ -1,46 +1,48 @@
 import { Request, Response, NextFunction } from "express";
 import { Microservice } from "../../domain/models/microservice.model";
 import { MicroServiceService } from "../../domain/services/microService.service";
+import { ServiceInstance } from "../../domain/models/serviceInstance.model";
+
 let service: MicroServiceService = new MicroServiceService();
 
 export interface TypedRequestBody<T> extends Request {
   body: T
 }
 
-export const addMicroservice = async (
-  req: TypedRequestBody<Microservice>,
-  res: Response,
-) => {
-  try {
-    const microservice: Microservice = req.body;
-    const added: boolean = service.addService(microservice);
-    if (added) {
-      res.status(201).json({
-        status: 'success',
-        Response: microservice
-      });
-    } else {
-      res.status(400).json({
-        status: 'failed'
-      });
-    }
-  } catch (error) {
-    console.error(error);
-  };
-};
+// export const addMicroservice = async (
+//   req: TypedRequestBody<Microservice>,
+//   res: Response,
+// ) => {
+//   try {
+//     const microservice: Microservice = req.body;
+//     const added: boolean = service.save(microservice);
+//     if (added) {
+//       res.status(201).json({
+//         status: 'success',
+//         Response: microservice
+//       });
+//     } else {
+//       res.status(400).json({
+//         status: 'failed'
+//       });
+//     }
+//   } catch (error) {
+//     console.error(error);
+//   };
+// };
 
-export const removeMicroservice = (
-  req: Request<{ service: ServiceInstance }>,
-  res: Response
-) => {
-  try {
-    let serviceToAdd = req.params.service;
-    service.remove(serviceToAdd);
-    return res.json(serviceToAdd);
-  } catch (error) {
-    res.json(404)
-  }
-};
+// export const removeMicroservice = (
+//   req: Request<{ service: ServiceInstance }>,
+//   res: Response
+// ) => {
+//   try {
+//     let serviceToAdd = req.params.service;
+//     service.remove(serviceToAdd);
+//     return res.json(serviceToAdd);
+//   } catch (error) {
+//     res.json(404)
+//   }
+// };
 
 export const getServiceUrl = (
   req: Request<{ serviceName: string }>,
@@ -86,16 +88,24 @@ export const registerInstance = (
   res: Response,
 ) => {
   try {
-    let newServiceInstance = req.body;
-    const data = service.register(newServiceInstance);
+    const serviceName = req.body.serviceName;
+    const ip = req.body.ip;
+    const port = req.body.port;
+    const status = req.body.status;
+    const data = service.register(serviceName, ip, port, status);
+
     res.status(200).json({
-      status: 'OK Instancia registrada correctamente',
+      status: 'OK',
       data
     })
-  } catch (err) {
+  } catch (error) {
+    let response
+    if (error instanceof Error) response = error.message;
+    else response = String(error);
+
     res.status(404).json({
-      status: 'fail',
-      data: err
+      status: 'Fail',
+      response
     });
   }
 }
@@ -105,8 +115,12 @@ export const updateInstance = (
   res: Response,
 ) => {
   try {
-    let newServiceInstance: ServiceInstance = req.body;
-    const data = service.update(newServiceInstance);
+    const serviceName = req.body.serviceName;
+    const ip = req.body.ip;
+    const port = req.body.port;
+    const status = req.body.status;
+
+    const data = service.update(serviceName, ip, port, status);
     res.status(200).json({
       status: 'OK Instancia actualizada correctamente',
       data: data
@@ -126,16 +140,24 @@ export const deleteInstance = (
   res: Response,
 ) => {
   try {
-    let newServiceInstance: ServiceInstance = req.body;
-    const data = service.remove(newServiceInstance);
+    const serviceName = req.body.serviceName;
+    const ip = req.body.ip;
+    const port = req.body.port;
+    const status = req.body.status;
+      
+    const data = service.remove(serviceName, ip, port, status);
     res.status(200).json({
-      status: 'OK "Instancia eliminada correctamente"',
+      status: "Instancia eliminada correctamente",
       data
     });
-  } catch (err) {
+  } catch (error) {
+    let response
+    if (error instanceof Error) response = error.message;
+    else response = String(error);
+
     res.status(404).json({
       status: 'fail',
-      data: err
+      response
     });
   }
 

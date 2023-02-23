@@ -1,3 +1,4 @@
+import { ServiceInstance } from "./serviceInstance.model";
 
 export class Microservice {  
     serviceName:string;
@@ -18,6 +19,7 @@ export class Microservice {
 
     addInstance(instance:ServiceInstance):void{
         //Primero chequear que no está la instancia agregada
+
         this.instances.push(instance);
     }
 

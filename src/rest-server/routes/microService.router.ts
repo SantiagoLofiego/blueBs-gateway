@@ -1,6 +1,4 @@
 import {
-  addMicroservice,
-  removeMicroservice,
   getServiceUrl,
   getAllMicroservices,
   registerInstance,
@@ -22,13 +20,11 @@ const router = express.Router();
 router.get("/:serviceName", getServiceUrl);
 router.get("/",getAllMicroservices);
 
-router.post("/addMicroservice", jsonParser ,addMicroservice);
-router.post("/registerInstance", jsonParser, registerInstance);
-router.put("/updateInstance", jsonParser, updateInstance);
+//router.post("/addMicroservice", jsonParser ,addMicroservice);
 
-router.delete("/", jsonParser, deleteInstance);
-
-
+router.post("/", registerInstance);
+router.put("/", updateInstance);
+router.delete("/", deleteInstance);
 
 
 

@@ -3,44 +3,37 @@ enum STATUS {
     ONLINE = "online",
 }
 
-class ServiceInstance {      
+export  class ServiceInstance {      
   serviceName:string;
-  host:string;
+  ip:string;
   port:string;
-  status:STATUS;  
+  status:STATUS=STATUS.ONLINE;//por default es ONLINE  
 
-  constructor(serviceName:string,host:string, port:string, status:STATUS){
-    this.serviceName=serviceName;
-    this.host =host;
-    this.port=port;
-    this.status=status;
+  constructor(serviceName:string, ip:string,port:string,status:string){
+    this.serviceName = serviceName;
+    this.ip = ip;
+    this.port = port;
+    this.setStatus(status||"online");
   }
 
-  // getUrl():string{
-  //   return this.host;
-  // }
-
-  // getServiceName():string{
-  //   return this.serviceName;
-  // }
-
-  // getStatus():STATUS{
-  //   return this.status;
-  // }
-
-
+  setStatus(status:string):void{
+    const lowerStatus=status.toLocaleLowerCase();
+    if(lowerStatus==="offline"){
+      this.status=STATUS.OFFLINE;
+    }else if (lowerStatus==="online"){
+      this.status=STATUS.ONLINE;
+    }
+  }
 
   equals(serviceInstance:ServiceInstance):boolean{
-    if(this.host===serviceInstance.host &&
-       this.serviceName===serviceInstance.serviceName &&
+    if(this.serviceName===serviceInstance.serviceName &&
+        this.ip===serviceInstance.ip &&       
        this.port===serviceInstance.port  
       ){
       return true;
     }else{
       return false;
-    }
-    
+    }    
   }
 }
 
-module.exports = { ServiceInstance }
