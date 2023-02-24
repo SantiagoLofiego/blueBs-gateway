@@ -125,15 +125,16 @@ export const updateInstance = (
       status: 'OK Instancia actualizada correctamente',
       data: data
     });
-  } catch (err) {
+  } catch (error) {
+    let response
+    if (error instanceof Error) response = error.message;
+    else response = String(error);
     res.status(404).json({
       status: 'fail',
-      data: err
+      response
     });
   }
-
 }
-
 
 export const deleteInstance = (
   req: Request,

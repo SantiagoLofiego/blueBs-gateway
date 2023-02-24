@@ -18,40 +18,54 @@ export class MicroServiceService {
     let microservice = this.microServiceRepository.findByName(serviceName);
 
     if (microservice) {//Si existe el microservicio
-      const instanceIndex: number = this.indexOfInstance(microservice, newInstance);
+      let microserviceToRegister = new Microservice(serviceName,microservice.instances);
+      const instanceIndex: number = microserviceToRegister.indexOfInstance(newInstance);
       if (instanceIndex < 0) {
-        microservice.instances.push(newInstance);
-        this.microServiceRepository.save(microservice);
+        microserviceToRegister.instances.push(newInstance);
+        this.microServiceRepository.save(microserviceToRegister);
       } else {
-        //ver que devolver si ya existía la instancia
-        throw new Error("No se puede guardar la instancia porque ya se encuentra registrada");
+        throw new Error("No se puede guardar la instancia porque ya se encuentra registrada");        //ver que devolver si ya existía la instancia
       }
     } else { //Si no existe el microservicio lo inicializo con la nueva instancia y lo guardo       
-      microservice = new Microservice(serviceName, [newInstance]);
-      this.microServiceRepository.save(microservice);
+      let microserviceToRegister = new Microservice(serviceName, [newInstance]);
+      this.microServiceRepository.save(microserviceToRegister);
     }
   }
 
   remove(serviceName: string, ip: string, port: string, status: string) {
     let instanceToRemove: ServiceInstance = new ServiceInstance(serviceName, ip, port, status);
     let microservice = this.microServiceRepository.findByName(serviceName);
-    if(microservice){//Si existe el microservicio que contiene la instancia
-      const indexToRemove = this.indexOfInstance(microservice,instanceToRemove)
-      if( (microservice.instances.length==1) && indexToRemove>=0){//Si el microservicio tiene solo esa instancia
-        this.microServiceRepository.remove(microservice); 
-      }else{
-        const instanceDeleted = microservice.instances.splice(indexToRemove,1);
-        let microserviceToRemove = new Microservice(serviceName,instanceDeleted);
-        this.microServiceRepository.save(microserviceToRemove);
+    let microserviceToRemove = new Microservice(serviceName, microservice.instances);
+
+    if (microservice) {//Si existe el microservicio que contiene la instancia 
+      const indexToRemove = microserviceToRemove.indexOfInstance(instanceToRemove)
+      if ((microservice.instances.length == 1) && indexToRemove >= 0) {//Si el microservicio tiene solo esa instancia
+        this.microServiceRepository.remove(microservice);
+      } else {
+        const instanceDeleted = microservice.instances.splice(indexToRemove, 1);
+        let microserviceToRemove = new Microservice(serviceName, instanceDeleted);
+        this.microServiceRepository.save(microserviceToRemove);//Guardo el nuevo microservicio sin la instancia borrada
       }
-    }else{
+    } else {
       throw new Error("No se puede remover la instancia porque no se encuentra registrado el microservicio");
     }
   }
 
   update(serviceName: string, ip: string, port: string, status: string) {
-    let newInstance: ServiceInstance = new ServiceInstance(serviceName, ip, port, status);
+    let instanceToUpdate: ServiceInstance = new ServiceInstance(serviceName, ip, port, status);
+    let microservice = this.microServiceRepository.findByName(serviceName);
 
+    if (microservice) {
+      let microserviceToUpdate = new Microservice(serviceName, microservice.instances);
+      let updated:boolean = microserviceToUpdate.updateInstance(instanceToUpdate);
+      if(updated){
+        this.microServiceRepository.save(microserviceToUpdate);//Guardo el nuevo microservicio con la instancia actualizada
+      }else{
+        throw new Error("No se puede actualizar la instancia porque no se encuentra registrada");
+      }
+    } else {
+      throw new Error("No se puede actualizar la instancia porque no se encuentra registrado el microservicio");
+    }
   }
 
   getService(serviceName: string): Microservice {
@@ -62,19 +76,19 @@ export class MicroServiceService {
     return this.microServiceRepository.getAll();
   }
 
-  indexOfInstance(microservice: Microservice, newInstance: ServiceInstance): number {
-    let encontrado: boolean = false;
-    let i: number = 0;
-    let posicionEncontrada: number = 0;
-    microservice.instances.forEach(element => {
-      if(newInstance.equals(element)){
-        (encontrado = true); 
-        posicionEncontrada=i;
-      }else{
-        i++;
-      }
-    });
-    return encontrado ? posicionEncontrada : -1;
-  }
+  // indexOfInstance(microservice: Microservice, newInstance: ServiceInstance): number {
+  //   let encontrado: boolean = false;
+  //   let i: number = 0;
+  //   let posicionEncontrada: number = 0;
+  //   microservice.instances.forEach(element => {
+  //     if (newInstance.equals(element)) {
+  //       (encontrado = true);
+  //       posicionEncontrada = i;
+  //     } else {
+  //       i++;
+  //     }
+  //   });
+  //   return encontrado ? posicionEncontrada : -1;
+  // }
 
 }

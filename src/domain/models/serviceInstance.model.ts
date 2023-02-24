@@ -1,6 +1,6 @@
 enum STATUS {
-    OFFLINE = "offline",
-    ONLINE = "online",
+    OFFLINE = "OFFLINE",
+    ONLINE = "ONLINE",
 }
 
 export  class ServiceInstance {      
