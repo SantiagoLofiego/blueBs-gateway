@@ -1,16 +1,22 @@
-const boom = require("@hapi/boom"); // Es un manejador de errorres
+import { UserRepository } from "../../data/users/userRepository";
+import { User } from "../models/user.model";
+
+// const boom = require("@hapi/boom"); // Es un manejador de errorres
 
 export class UserService {
-  //repository:UserRepository;
-
+  repository = new UserRepository();
   constructor() {}
 
-  async findOne(userName: string) {
-    // const user = await this.repository.findUserByUsername(userName);
-    const user = "prueba";
-    if (!user) {
-      boom.notFound("user not found");
+  findByUsername(username: string) {
+    const user = this.repository.findByUserName(username);
+    if (user){
+      return user;
+    }else{
+      throw new Error("Usuario no encontrado!");
     }
-    return user;
+ } 
+
+  findAll():User[]{
+    return this.repository.findAll();
   }
 }

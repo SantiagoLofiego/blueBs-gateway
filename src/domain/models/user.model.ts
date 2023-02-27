@@ -1,27 +1,25 @@
-class User {   
-    
-  private id:number;
-  private userName:string;
-  private password:string;
+export class User {
 
-  constructor(id:number, userName:string, password:string){
-    this.id=id;
-    this.userName=userName;
-    this.password=password;
+  id: number;
+  username: string;
+  password: string;
+
+  constructor(id: number, userName: string, password: string) {
+    this.id = id;
+    this.username = userName;
+    this.password = password;
   }
 
-  getId():number{
+  getId(): number {
     return this.id;
   }
 
-  getUsername():string{
-    return this.userName;
+  getUsername(): string {
+    return this.username;
   }
 
-  setUsername(newUsername:string):void{
-    this.userName=newUsername;
+  setUsername(newUsername: string): void {
+    this.username = newUsername;
   }
 
 }
-
-module.exports = { User }

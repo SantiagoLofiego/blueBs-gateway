@@ -1,15 +1,22 @@
 import UserRepositoryInterface from "./../../domain/repositories/interfaces/userRepositoryInterface"
+import { User } from "../../domain/models/user.model";
 
 const fs = require('fs');//fs para leer los archivos json de prueba
+const data = fs.readFileSync(`${__dirname}/../../../users.json`, 'utf-8').toString();
+const dataObj:User[] = JSON.parse(data);
 
-  
-class UserRepository implements UserRepositoryInterface{
-    private geUsersFromArchive():User[]{
-        return [new User(123,"dasdas","dasda")]; //Harcodeado solo para que no de error, hay que cambiarlo
-    }
+export class UserRepository implements UserRepositoryInterface {
+    constructor(){}
 
     findByUserName(username: string): User {
-        throw new Error("Method not implemented.");
+        const users = dataObj.filter((user)=>{
+            return user.username == username;
+        })
+        return users[0];
+    }
+
+    findAll():User[]{
+        return dataObj;
     }
     
 }

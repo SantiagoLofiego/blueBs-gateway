@@ -3,7 +3,7 @@ enum STATUS {
     ONLINE = "ONLINE",
 }
 
-export  class ServiceInstance {      
+export class ServiceInstance {      
   serviceName:string;
   ip:string;
   port:string;

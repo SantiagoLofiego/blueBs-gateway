@@ -1,12 +1,12 @@
-import { UserController } from "../controllers/user.controller";
+import { findAll,
+    findUser } from "../controllers/user.controller";
 
 const express = require("express");
 
 const router = express.Router();
-const userRouter = express.Router();
 
-const controller = new UserController();
+router.get("/",findAll);
 
-userRouter.get("/:username", controller.findUser);
+router.get("/:username",findUser);
 
-export default userRouter;
+export default router;
