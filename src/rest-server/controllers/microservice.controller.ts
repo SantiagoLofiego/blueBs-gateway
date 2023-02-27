@@ -9,41 +9,6 @@ export interface TypedRequestBody<T> extends Request {
   body: T
 }
 
-// export const addMicroservice = async (
-//   req: TypedRequestBody<Microservice>,
-//   res: Response,
-// ) => {
-//   try {
-//     const microservice: Microservice = req.body;
-//     const added: boolean = service.save(microservice);
-//     if (added) {
-//       res.status(201).json({
-//         status: 'success',
-//         Response: microservice
-//       });
-//     } else {
-//       res.status(400).json({
-//         status: 'failed'
-//       });
-//     }
-//   } catch (error) {
-//     console.error(error);
-//   };
-// };
-
-// export const removeMicroservice = (
-//   req: Request<{ service: ServiceInstance }>,
-//   res: Response
-// ) => {
-//   try {
-//     let serviceToAdd = req.params.service;
-//     service.remove(serviceToAdd);
-//     return res.json(serviceToAdd);
-//   } catch (error) {
-//     res.json(404)
-//   }
-// };
-
 export const getServiceUrl = (
   req: Request<{ serviceName: string }>,
   res: Response
@@ -57,9 +22,12 @@ export const getServiceUrl = (
       microservice
     });
   } catch (error) {
+    let response
+    if (error instanceof Error) response = error.message;
+    else response = String(error);
     res.status(404).json({
       status: 'fail',
-      data: error
+      response
     });
   }
 };
@@ -75,10 +43,13 @@ export const getAllMicroservices = async (
       results: data.length,
       data
     });
-  } catch (err) {
+  } catch (error) {
+    let response
+    if (error instanceof Error) response = error.message;
+    else response = String(error);
     res.status(404).json({
       status: 'fail',
-      data: err
+      response
     });
   }
 }

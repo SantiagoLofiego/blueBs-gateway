@@ -26,7 +26,7 @@ export class MicroServiceRepository implements MicroServiceRepositoryInterface {
         if(!this.existMicroservice(microService.serviceName)){
             throw new Error("No existe el microservicio");
         }else{ 
-            const microServiceIndex:number = this.indexOfMicroservice(microService);
+            const microServiceIndex:number = this.findIndex(microService);
             const deletedData=dataObj.splice(microServiceIndex,1);
             return fs.promises.writeFile(`${__dirname}/../../../db.json`, JSON.stringify(deletedData));
         }
@@ -37,7 +37,7 @@ export class MicroServiceRepository implements MicroServiceRepositoryInterface {
             if (!this.existMicroservice(microService.serviceName)) { //Si no existe lo agrego, si existe lo reemplazo
                 dataObj.push(microService);
             } else {
-                const microServiceIndex = this.indexOfMicroservice(microService);
+                const microServiceIndex = this.findIndex(microService);
                 dataObj[microServiceIndex]=microService;
             }
            return fs.promises.writeFile(`${__dirname}/../../../db.json`, JSON.stringify(dataObj));             
@@ -58,7 +58,7 @@ export class MicroServiceRepository implements MicroServiceRepositoryInterface {
     }
    
 
-    private indexOfMicroservice(microService: Microservice): number {
+    private findIndex(microService: Microservice): number {
         let encontrado: boolean = false;
         let i: number = 0;
         while (!encontrado) {
@@ -81,29 +81,3 @@ export class MicroServiceRepository implements MicroServiceRepositoryInterface {
         return result;
     }
 }
-
-
- // private equalIsntances(instance1: ServiceInstance, instance2: ServiceInstance): boolean {
-    //     if (instance1.ip === instance2.ip &&
-    //         instance1.port === instance2.port &&
-    //         instance1.serviceName === instance2.serviceName) {
-    //         return true
-    //     } else {
-    //         return false
-    //     }
-    // }
-
-    // private indexOfInstance(arrayInstances: ServiceInstance[], instance: ServiceInstance): number {
-    //     let encontrado: boolean = false;
-    //     let i: number = 0;
-    //     while (!encontrado) {
-    //         const actualInstance: serviceInstance = arrayInstances[i];
-    //         if (this.equalIsntances(actualInstance, instance)) {
-    //             encontrado = true;
-    //         }
-    //         i++;
-    //     }
-
-    //     return i - 1;
-
-    // }

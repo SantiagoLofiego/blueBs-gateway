@@ -1,1 +1,1 @@
-[{"serviceName":"servicio19","instances":[{"status":"ONLINE","serviceName":"servicio19","ip":"198.170.0.9","port":9004}]}]
+[{"serviceName":"servicio19","instances":[{"status":"ONLINE","serviceName":"servicio19","ip":"198.170.0.9","port":9004}]},{"serviceName":"servicioUsuarios","instances":[{"status":"ONLINE","serviceName":"servicioUsuarios","ip":"196.160.0.1","port":300},{"status":"ONLINE","serviceName":"servicioUsuarios","ip":"196.160.0.2","port":400}]}]

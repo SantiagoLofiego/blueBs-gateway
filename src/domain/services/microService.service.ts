@@ -7,10 +7,6 @@ export class MicroServiceService {
   microServiceRepository = new MicroServiceRepository();
   constructor() { }
 
-  // addService(service: Microservice): boolean {
-  //   return this.microServiceRepository.add(service);
-  // }
-
   register(serviceName: string, ip: string, port: string, status: string): void {
 
     let newInstance: ServiceInstance = new ServiceInstance(serviceName, ip, port, status);
