@@ -18,5 +18,14 @@ export class UserRepository implements UserRepositoryInterface {
     findAll():User[]{
         return dataObj;
     }
-    
+
+    checkCredentials(username:string, password:string):boolean{
+        const user:User = this.findByUserName(username);
+        if(user){
+            return (user.username==username && user.password==password) ? true : false;
+        }
+        else{
+            throw new Error("No existe el usuario!");            
+        }        
+    }
 }

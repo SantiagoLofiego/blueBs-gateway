@@ -19,6 +19,11 @@ const config = {
         filePath:"./registry.json"
       }
     }
+  },
+  jwt:{
+    JWT_SECRET:'secure-long-secret-code',
+    JWT_EXPIRES_IN:'1d'
+
   }
 }
 

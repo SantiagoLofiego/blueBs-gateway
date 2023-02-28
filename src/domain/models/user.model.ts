@@ -22,4 +22,13 @@ export class User {
     this.username = newUsername;
   }
 
+  equals(user:User):boolean{
+    if(user.username==this.username && user.password==this.password){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
 }
