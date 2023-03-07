@@ -1,4 +1,4 @@
-import express, { Express, Router } from "express";
+import express, { Express, RequestHandler, Router } from "express";
 export class Server {
   private static instance: Server;
   private express: Express;
@@ -14,8 +14,8 @@ export class Server {
     return Server.instance;
   }
 
-  routes(route: Router) {
-    this.express.use(route);
+  use(handler: RequestHandler) {
+    this.express.use(handler);
   }
 
   run(port?: number | string) {
