@@ -1,11 +1,10 @@
 import { Microservice } from "../../models/microservice.model";
-import { ServiceInstance } from "../../models/serviceInstance.model";
 
-interface MicroServiceRepositoryInterface{
-    save(microService:Microservice):Promise<void>;
-    findByName(serviceName:string):Microservice;
-   // update(microService: Microservice):Promise<void>;
-    remove(microService:Microservice):Promise<void>;
+interface MicroServiceRepositoryInterface {
+  findByName(serviceName: string): Promise<Microservice | null>;
+  getAll(): Promise<Microservice[]>;
+  save(microService: Microservice): Promise<void>;
+  remove(serviceName: string): Promise<void>;
 }
 
 export default MicroServiceRepositoryInterface;

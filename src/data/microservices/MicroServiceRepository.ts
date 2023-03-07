@@ -1,83 +1,77 @@
-import MicroServiceRepositoryInterface from "../../domain/repositories/interfaces/MicroServiceRepositoryInterface";
 import fs from "fs"
+import config from "../../config";
+import MicroServiceRepositoryInterface from "../../domain/repositories/interfaces/MicroServiceRepositoryInterface";
 import { Microservice } from './../../domain/models/microservice.model';
+import { ServiceInstance, STATUS } from './../../domain/models/serviceInstance.model';
 
-import {ServiceInstance} from './../../domain/models/serviceInstance.model';
+const path = config.data.microService.file.filePath;
+const data: ServicesData = getFile();
 
-const data = fs.readFileSync(`${__dirname}/../../../db.json`, 'utf-8').toString();
-const dataObj: service = JSON.parse(data);
+function getFile(): ServicesData {
+  try {
+    const file = JSON.parse((fs.readFileSync(path)).toString())
+    if ((file as ServicesData).services != undefined) {
+      return file;
+    } else {
+      throw new Error('File is not a services file ')
+    }
+  } catch (error) {
+    console.log((error as Error).message, 'New File was created')
+    const newData = { services: {} };
+    fs.writeFileSync(path, JSON.stringify(newData));
+    return newData;
+  }
+}
 
-type service = [microservice: Microservice]
+type ServiceInstanceEntity = {
+  id: string;
+  protocol: string;
+  ip: string;
+  port: string;
+  url: string;
+  status: STATUS
+}
+
+type MicroServiceEntity = {
+  serviceName: string,
+  instances: ServiceInstanceEntity[]
+}
+
+type ServicesData = { services: { [key: string]: MicroServiceEntity } };
+
+
 
 export class MicroServiceRepository implements MicroServiceRepositoryInterface {
-    constructor() { }
+  constructor() { }
 
-    // update(microService: Microservice): Promise<void> {
-    //     // if(!this.existMicroservice(microService.serviceName)){
-    //     //     throw new Error("No existe el microservicio");
-    //     // }else{ 
-    //     //     const microServiceIndex:number = this.indexOfMicroservice(microService);
-    //     //     dataObj[microServiceIndex]=microService;
-    //     //     return fs.promises.writeFile(`${__dirname}/../../../db.json`, JSON.stringify(dataObj));
-    //     // }        
-    // }
+  async remove(serviceName: string): Promise<void> {
+    delete data.services[serviceName];
+    return fs.promises.writeFile(path, JSON.stringify(data));
+  }
 
-    remove(microService: Microservice): Promise<void> { //Remove Microservice        
-        if(!this.existMicroservice(microService.serviceName)){
-            throw new Error("No existe el microservicio");
-        }else{ 
-            const microServiceIndex:number = this.findIndex(microService);
-            const deletedData=dataObj.splice(microServiceIndex,1);
-            return fs.promises.writeFile(`${__dirname}/../../../db.json`, JSON.stringify(deletedData));
-        }
-    }
+  async save(microService: Microservice): Promise<void> {
+       data.services[microService.serviceName] = microService
+    return fs.promises.writeFile(path, JSON.stringify(data))
+  }
 
-    save(microService: Microservice): Promise<void> {
-        try {
-            if (!this.existMicroservice(microService.serviceName)) { //Si no existe lo agrego, si existe lo reemplazo
-                dataObj.push(microService);
-            } else {
-                const microServiceIndex = this.findIndex(microService);
-                dataObj[microServiceIndex]=microService;
-            }
-           return fs.promises.writeFile(`${__dirname}/../../../db.json`, JSON.stringify(dataObj));             
-        } catch (error) {
-            throw new Error("No se pudo completar la operación de guardado de Microservice!!");
-        }
+  async findByName(serviceName: string): Promise<Microservice | null> {
+    const microserviceEntity = data.services[serviceName];
+    if (microserviceEntity) {
+      return this.toMicroservice(microserviceEntity);
+    } else {
+      return null;
     }
+  }
 
-    findByName(serviceName: string): Microservice{ 
-        const dataFiltered = dataObj.filter((element: { serviceName: string; }) => {
-            return element.serviceName === serviceName;
-        });        
-        return dataFiltered[0];
-    }
- 
-    getAll(): service {
-        return dataObj;
-    }
-   
+  async getAll(): Promise<Microservice[]> {
+    const services = Object.entries(data.services).map(el=> this.toMicroservice(el[1]))
+    return services;
+  }
 
-    private findIndex(microService: Microservice): number {
-        let encontrado: boolean = false;
-        let i: number = 0;
-        while (!encontrado) {
-            if (dataObj[i].serviceName == microService.serviceName) {
-                encontrado = true;
-            } else {
-                i++;
-            }
-        }
-        return encontrado ? i: -1;
-    }
-    
-    private existMicroservice(microServiceName: string): boolean {
-        let result: boolean = false;
-        dataObj.forEach((element) => {
-            if (microServiceName == element.serviceName) {
-                result = true;            
-            }
-        });
-        return result;
-    }
+  toMicroservice(microservice: MicroServiceEntity): Microservice {
+    const instances = microservice.instances
+      .map(el => new ServiceInstance( el.protocol, el.ip, el.port, el.status));
+    return new Microservice(microservice.serviceName, instances);
+  }
+
 }

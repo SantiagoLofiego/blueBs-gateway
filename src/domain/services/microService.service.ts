@@ -1,90 +1,64 @@
-const boom = require("@hapi/boom");
 import { Microservice } from "../models/microservice.model";
-import { MicroServiceRepository } from "./../../data/microservices/MicroServiceRepository";
 import { ServiceInstance } from "../models/serviceInstance.model";
+import MicroServiceRepositoryInterface from "../repositories/interfaces/MicroServiceRepositoryInterface";
+import { validatePatch, validatePost } from "./validators/microservice.validator";
 
-export class MicroServiceService {
-  microServiceRepository = new MicroServiceRepository();
-  constructor() { }
+export type serviceInstanceDto = {
+  serviceName: string,
+  protocol: string,
+  ip: string,
+  port: string,
+  status: string
+}
 
-  register(serviceName: string, ip: string, port: string, status: string): void {
+export class MicroserviceService {
+  private repository: MicroServiceRepositoryInterface;
 
-    let newInstance: ServiceInstance = new ServiceInstance(serviceName, ip, port, status);
+  constructor(microserviceRepository: MicroServiceRepositoryInterface) {
+    this.repository = microserviceRepository;
+  }
 
-    let microservice = this.microServiceRepository.findByName(serviceName);
+  async getInstance(serviceName: string): Promise<Microservice> {
+    const microservice = await this.repository.findByName(serviceName);
+    if (!microservice) throw new Error(`Microservice ${serviceName} not found`);
+    return microservice
+  }
 
-    if (microservice) {//Si existe el microservicio
-      let microserviceToRegister = new Microservice(serviceName,microservice.instances);
-      const instanceIndex: number = microserviceToRegister.indexOfInstance(newInstance);
-      if (instanceIndex < 0) {
-        microserviceToRegister.instances.push(newInstance);
-        this.microServiceRepository.save(microserviceToRegister);
-      } else {
-        throw new Error("No se puede guardar la instancia porque ya se encuentra registrada");        //ver que devolver si ya existía la instancia
-      }
-    } else { //Si no existe el microservicio lo inicializo con la nueva instancia y lo guardo       
-      let microserviceToRegister = new Microservice(serviceName, [newInstance]);
-      this.microServiceRepository.save(microserviceToRegister);
+  async getAllServices() {
+    return await this.repository.getAll();
+  }
+
+  async registerInstance(serviceName: string, instance: serviceInstanceDto): Promise<ServiceInstance> {
+    validatePost(instance);
+    const newInstace = this.toServiceInstace(instance);
+    let microservice = await this.repository.findByName(serviceName)
+    if (!microservice) {
+      microservice = new Microservice(serviceName)
     }
+    microservice.addInstance(newInstace);
+    await this.repository.save(microservice);
+    return newInstace;
   }
 
-  remove(serviceName: string, ip: string, port: string, status: string) {
-    let instanceToRemove: ServiceInstance = new ServiceInstance(serviceName, ip, port, status);
-    let microservice = this.microServiceRepository.findByName(serviceName);
-    let microserviceToRemove = new Microservice(serviceName, microservice.instances);
-
-    if (microservice) {//Si existe el microservicio que contiene la instancia 
-      const indexToRemove = microserviceToRemove.indexOfInstance(instanceToRemove)
-      if ((microservice.instances.length == 1) && indexToRemove >= 0) {//Si el microservicio tiene solo esa instancia
-        this.microServiceRepository.remove(microservice);
-      } else {
-        const instanceDeleted = microservice.instances.splice(indexToRemove, 1);
-        let microserviceToRemove = new Microservice(serviceName, instanceDeleted);
-        this.microServiceRepository.save(microserviceToRemove);//Guardo el nuevo microservicio sin la instancia borrada
-      }
-    } else {
-      throw new Error("No se puede remover la instancia porque no se encuentra registrado el microservicio");
-    }
+  async updateInstance(serviceName: string, id: string, data: { [key: string]: any }): Promise<ServiceInstance> {
+    validatePatch(data);
+    const microservice = await this.getInstance(serviceName);
+    const updatedInstance = microservice.updateInstance(id, data);
+    await this.repository.save(microservice);
+    return updatedInstance
   }
 
-  update(serviceName: string, ip: string, port: string, status: string) {
-    let instanceToUpdate: ServiceInstance = new ServiceInstance(serviceName, ip, port, status);
-    let microservice = this.microServiceRepository.findByName(serviceName);
-
-    if (microservice) {
-      let microserviceToUpdate = new Microservice(serviceName, microservice.instances);
-      let updated:boolean = microserviceToUpdate.updateInstance(instanceToUpdate);
-      if(updated){
-        this.microServiceRepository.save(microserviceToUpdate);//Guardo el nuevo microservicio con la instancia actualizada
-      }else{
-        throw new Error("No se puede actualizar la instancia porque no se encuentra registrada");
-      }
-    } else {
-      throw new Error("No se puede actualizar la instancia porque no se encuentra registrado el microservicio");
-    }
+  async removeInstance(serviceName: string, id: string) {
+    const microservice = await this.getInstance(serviceName);
+    microservice.removeInstance(id);
+    await this.repository.save(microservice);
   }
 
-  getService(serviceName: string): Microservice {
-    return this.microServiceRepository.findByName(serviceName);
+  toServiceInstace(dto: serviceInstanceDto): ServiceInstance {
+    return new ServiceInstance(
+      dto.protocol,
+      dto.ip,
+      dto.port,
+      ServiceInstance.statusFromString(dto.status))
   }
-
-  getAllServices() {
-    return this.microServiceRepository.getAll();
-  }
-
-  // indexOfInstance(microservice: Microservice, newInstance: ServiceInstance): number {
-  //   let encontrado: boolean = false;
-  //   let i: number = 0;
-  //   let posicionEncontrada: number = 0;
-  //   microservice.instances.forEach(element => {
-  //     if (newInstance.equals(element)) {
-  //       (encontrado = true);
-  //       posicionEncontrada = i;
-  //     } else {
-  //       i++;
-  //     }
-  //   });
-  //   return encontrado ? posicionEncontrada : -1;
-  // }
-
 }

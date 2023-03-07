@@ -1,5 +1,3 @@
-const boom = require("@hapi/boom"); // Es un manejador de errorres
-
 export class UserService {
   //repository:UserRepository;
 
@@ -9,7 +7,7 @@ export class UserService {
     // const user = await this.repository.findUserByUsername(userName);
     const user = "prueba";
     if (!user) {
-      boom.notFound("user not found");
+      //
     }
     return user;
   }

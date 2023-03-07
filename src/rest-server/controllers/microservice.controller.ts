@@ -1,22 +1,17 @@
 import { Request, Response, NextFunction } from "express";
-import { Microservice } from "../../domain/models/microservice.model";
-import { MicroServiceService } from "../../domain/services/microService.service";
-import { ServiceInstance } from "../../domain/models/serviceInstance.model";
+import { MicroserviceService } from "../../domain/services/microService.service";
+import context from "../../config/context";
 
-let service: MicroServiceService = new MicroServiceService();
+const service = context.get<MicroserviceService>('MicroserviceService');
 
-export interface TypedRequestBody<T> extends Request {
-  body: T
-}
 
-export const getServiceUrl = (
+export const getInstance = async (
   req: Request<{ serviceName: string }>,
   res: Response
 ) => {
   try {
     const serviceName: string = req.params.serviceName;
-    console.log(serviceName);
-    const microservice = service.getService(serviceName);
+    const microservice = await service.getInstance(serviceName);
     res.status(200).json({
       status: 'OK',
       microservice
@@ -37,7 +32,7 @@ export const getAllMicroservices = async (
   res: Response,
 ) => {
   try {
-    const data = service.getAllServices();
+    const data = await service.getAllServices();
     res.status(200).json({
       status: 'OK',
       results: data.length,
@@ -54,18 +49,14 @@ export const getAllMicroservices = async (
   }
 }
 
-export const registerInstance = (
+export const registerInstance = async (
   req: Request,
   res: Response,
 ) => {
   try {
-    const serviceName = req.body.serviceName;
-    const ip = req.body.ip;
-    const port = req.body.port;
-    const status = req.body.status;
-    const data = service.register(serviceName, ip, port, status);
+    const data = await service.registerInstance(req.params.serviceName, req.body);
 
-    res.status(200).json({
+    res.status(202).json({
       status: 'OK',
       data
     })
@@ -81,17 +72,12 @@ export const registerInstance = (
   }
 }
 
-export const updateInstance = (
+export const updateInstance = async (
   req: Request,
   res: Response,
 ) => {
   try {
-    const serviceName = req.body.serviceName;
-    const ip = req.body.ip;
-    const port = req.body.port;
-    const status = req.body.status;
-
-    const data = service.update(serviceName, ip, port, status);
+    const data = await service.updateInstance(req.params.serviceName, req.params.id, req.body);
     res.status(200).json({
       status: 'OK Instancia actualizada correctamente',
       data: data
@@ -107,20 +93,15 @@ export const updateInstance = (
   }
 }
 
-export const deleteInstance = (
+export const deleteInstance = async (
   req: Request,
   res: Response,
 ) => {
   try {
-    const serviceName = req.body.serviceName;
-    const ip = req.body.ip;
-    const port = req.body.port;
-    const status = req.body.status;
-      
-    const data = service.remove(serviceName, ip, port, status);
+    await service.removeInstance(req.params.serviceName, req.params.id);
     res.status(200).json({
       status: "Instancia eliminada correctamente",
-      data
+      data: null
     });
   } catch (error) {
     let response

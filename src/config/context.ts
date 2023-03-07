@@ -1,8 +1,11 @@
-import server from "../rest-server";
+import { MicroServiceRepository } from "../data/microservices/MicroServiceRepository";
+import { MicroserviceService } from "../domain/services/microService.service";
 import DiContainer from "./DI/DiContainer";
 
-const container = new DiContainer();
+const context = new DiContainer();
 
-container.registerInstance("server", server);
+context.registerClass("MicroserviceRepository", MicroServiceRepository);
+context.registerClass('MicroserviceService', MicroserviceService, ['MicroserviceRepository'])
+console.info('CONTEXT LOADED')
 
-export default container;
+export default context;

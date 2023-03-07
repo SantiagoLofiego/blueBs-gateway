@@ -1,10 +1,4 @@
-import {
-  getServiceUrl,
-  getAllMicroservices,
-  registerInstance,
-  updateInstance,
-  deleteInstance
-} from "../controllers/microservice.controller";
+import{registerInstance, getInstance, getAllMicroservices, updateInstance, deleteInstance} from "../controllers/microservice.controller";
 
 const express = require("express");
 
@@ -12,10 +6,10 @@ const router = express.Router();
 
 //Definición de endpoints
 
-router.get("/:serviceName", getServiceUrl)
+router.post("/:serviceName", registerInstance)
+      .get("/:serviceName", getInstance)
       .get("/",getAllMicroservices)
-      .post("/", registerInstance)
-      .put("/", updateInstance)
-      .delete("/", deleteInstance)
+      .patch("/:serviceName/:id", updateInstance)
+      .delete("/:serviceName/:id", deleteInstance)
 
 export default router;
