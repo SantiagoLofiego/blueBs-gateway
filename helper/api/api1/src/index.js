@@ -1,71 +1,40 @@
 const express = require('express')
+const axios = require('axios').default;
 const Router = express.Router
+const userRouter = require('./user.routes')
 
-const userData = require('../src/userdata').userData
 const errorHandler = require('./errorMiddle')
-
-
-const server = express();
 const router = Router();
-const userRouter = Router()
-const Apirouter = Router();
-
-server.use(express.json())
-
-userRouter.get('/', (req, res, next) => {
-  const query = req.query;
-  const maxAge = parseInt(query.maxAge) || 200;
-  const minAge = parseInt(query.minAge) || 0;
-  const response = userData.users.filter((user) => { return user.age >= minAge && user.age <= maxAge })
-
-  res.send(response)
-})
-
-userRouter.get('/:name', (req, res, next) => {
-  const userName = req.params.name.toLowerCase();
-  console.log(userName)
-  const resp = userData.users.find((user) => {
-    console.log(user.name);
-    return user.name.toLowerCase() === userName
-  })
-
-  if (!resp) {
-    next({ error: 'user not found', status: 500 })
-  } else {
-    res.send(resp)
-  }
-})
-
-userRouter.post('/', (req, res, next) => {
-  const body = req.body;
-  if(body.name && body.password && body.age){
-    const newUser = { name: body.name, password: body.password, age: body.age }
-    if (userData.users.find((user)=> user.name === newUser.name )){
-      next({error:'user already exist', status: 409});
-    }else{
-      userData.users.push(newUser);
-      res.status(201)
-      res.send({status:'ok', user:newUser})
-    }
-  }else {
-    next({error:'missing fields', status:400})
-  }
-})
-
-
-
-
-
-
+const server = express();
+const register = process.argv.find(el => el.includes('-r')) ? true : false;
+const port = parseInt(process.argv.find(el => el.includes('-port'))?.split('=')[1]) || 3001;
+console.log(port, register)
 
 router.use('/users', userRouter);
-
-
-Apirouter.use('/api', router);
-
-server.use(Apirouter);
+server.use(express.json())
+server.use(router);
 server.use(errorHandler)
-server.listen(3001, () => {
-  console.log('server listening on port 3001')
+server.listen(port, () => {
+  console.log(`server listening on port ${port}`)
 })
+
+//service register
+function gatewayRegistration() {
+  const gatewayURL = 'http://localhost:3000/microservices/user';
+  axios.post(gatewayURL,
+    {
+      protocol: 'http',
+      ip: 'localhost',
+      port: port.toString(),
+      status: 'online'
+    })
+    .then(resp => console.log(resp.data))
+    .catch(error => console.log(error.response.data));
+}
+
+
+if (register) {
+  gatewayRegistration();
+}
+
 

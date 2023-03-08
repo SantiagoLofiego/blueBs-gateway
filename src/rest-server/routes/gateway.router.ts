@@ -3,6 +3,6 @@ import { dispatcher } from "../controllers/gateway.controller";
 
 const gatewayRouter = express.Router();
 
-gatewayRouter.use("/:apiName", dispatcher);
+gatewayRouter.use("/:serviceName", dispatcher);
 
 export default gatewayRouter;

@@ -15,6 +15,19 @@
       "outFiles": [
         "${workspaceFolder}/**/*.js"
       ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Run Ap1 -r",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "args": ["-r"],
+      "program": "${workspaceFolder}\\helper\\api\\api1\\src\\index.js",
+      "outFiles": [
+        "${workspaceFolder}/**/*.js"
+      ]
     }
   ]
 }
