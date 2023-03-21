@@ -16,7 +16,7 @@ const config = {
     },
     microService:{
       file:{
-        filePath:"./registry.json"
+        filePath:"./db.json"
       }
     }
   }

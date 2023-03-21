@@ -1,43 +1,46 @@
-enum STATUS {
-    OFFLINE = "offline",
-    ONLINE = "online",
+import md5 from "md5"
+
+export enum STATUS {
+  OFFLINE = "OFFLINE",
+  ONLINE = "ONLINE",
+  BUSY = 'BUSY'
 }
 
-class ServiceInstance {      
-  private serviceName:string;
-  private host:string;
-  private port:string;
-  private status:STATUS;  
+export class ServiceInstance {
+  id: string;
+  protocol: string;
+  ip: string;
+  port: string;
+  url: string;
+  status: STATUS
 
-  constructor(serviceName:string,host:string, port:string, status:STATUS){
-    this.serviceName=serviceName;
-    this.host =host;
-    this.port=port;
-    this.status=status;
+  constructor(protocol: string, ip: string, port: string, status: STATUS) {
+    this.protocol = protocol;
+    this.ip = ip;
+    this.port = port;
+    this.url = `${protocol}://${ip}:${port}`
+    this.id = md5(this.url);
+    this.status = status;
   }
 
-  getUrl():string{
-    return this.host;
+  static statusFromString(status: string): STATUS {
+    switch (status.toLowerCase()) {
+      case "online":
+        return STATUS.ONLINE
+      case "offline":
+        return STATUS.OFFLINE
+      case "busy":
+        return STATUS.BUSY
+      default:
+        throw new Error(`The status \"${status}\" does not exist`);
+    }
   }
 
-  getServiceName():string{
-    return this.serviceName;
-  }
-
-  getStatus():STATUS{
-    return this.status;
-  }
-
-
-
-  equals(serviceInstance:ServiceInstance):boolean{
-    if(this.serviceName===serviceInstance.getServiceName() ){
+  equals(serviceInstance: ServiceInstance): boolean {
+    if (this.id === serviceInstance.id) {
       return true;
-    }else{
+    } else {
       return false;
     }
-    
   }
 }
-
-module.exports = { ServiceInstance }
